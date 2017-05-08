@@ -1,0 +1,133 @@
+
+    Marcu Denis-George
+    332CA
+
+                                   Geometry Wars 2D
+
+
+
+     1. Utilizare aplicatie:
+
+  - Pentru deplasarea navei se folosesc tastele W, A, S, D.
+  - Mouse-ul coordoneaza nava, aceasta se va roti dupa pozitia lui.
+  - Lansarea proiectilelor se realizeaza prin CLICK STANGA pe mouse. Proiectilul
+se va duce in directia mouse-ului.
+  - Tasta P seteaza jocul in pauza.
+
+
+     2. Scurta descriere:
+  
+  Nava utilizatorului se va afla in centrul ecranului. La un interval, initial
+de 2 secunde, va aparea un nou inamic. Acest interval se va micsora pe durata
+jocului, ajungand la 0.5 secunde.
+  
+  Exista 2 tipuri de inamici. Cei albastri, care au o singura viata si cei 
+galbeni care au 2 vieti. Cei din urma, dupa ce isi pierd o viata, se vor
+micsora si isi maresc viteza.
+
+  Playerul poate colecta un bonus de pe ecran la un interval de timp de 30 de
+secunde. Bonusul consta intr-o viata in plus sau un scut de 10 secunde.
+
+  Dupa ce utilizatorul a distrus 50 de inamici, va aparea inamicul sef. Acesta
+are o viata mult mai mare si poate sa lanseze proiectile catre nava player.
+Inamicul sef suporta 2 micsorari, in functie de cat de avariat este. La fiecare
+micsorare isi mareste viteza de lansare a proiectilelor si viteza de 
+deplasare.
+
+  Daca inamicul sef a fost distrus, jocul s-a incheiat!
+
+
+     3. Detalii despre implementare:
+
+  - Am inceput rezolvarea temei de la Laborator3_Vid2D.
+
+  - Clasa principala este denumita Object2D. In aceasta clasa avem salvate
+campurile esentiale ale obiectelor din joc (pozitia, scala, unghiul, viteza,
+raza, etc.). De asemenea, in aceasta clasa vom seta toate aceste campuri, vom
+verifica daca 2 obiecte sunt in coliziune.
+
+  - Clasa player extinde clasa Object2D si implementeaza nava utilizatorului si
+nava inamicului sef. In aceasta clasa avem numarul de vieti al navelor, scutul,
+iar pentru inamicul sef vom retine si sensul de deplasare (stanga - dreapta sau
+invers) si frecventa de lansare a proiectilelor si tipul de inamic. Inamicul
+sef se poate micsora de 2 ori, deci va fi de 3 tipuri.
+
+  - Clasa Bullet extinde clasa Object2D si reprezinta proiectilele.
+
+  - Clasa Enemy extinde clasa Object2D si reprezinta un inamic. Inamicul
+se poate micsora, de aceea trebuie retinuta o scala relativa pentru nava,
+care va fi calculata atunci cand un inamic cu 2 vieti pierde una. In aceasta 
+clasa se seteaza proprietatile unei nave de tip inamic (pozitie aleatoare pe
+cercul cu centrul in jurul mijlocului ecranului, viteza de deplasare, scala,
+dtipul).
+
+  - Clasa Bonus extinde clasa Object2D si implementeaza obiecte bonus (viata 
+  in plus sau scut). In ea se retin date despre spre bonus este activ.
+
+  - Clasa Tema1 este clasa in care implementam jocul in sine. 
+
+  - Transformarile suferite de obiecte sunt implementate in Transform2D.
+
+
+  Voi detalia cateva metode de rezolvare:
+  
+  - Spre exemplu rotirea navei utilizatorului dupa mouse: Avem obiectul curent
+ (nava) si punctul relativ(mouse-ul). Asociem obiectului curent un sistem de
+ axe XOY si calculam unghiul dintre OY si dreapta generata de cele 2 puncte din
+ sistem. Unghiul de rotatie va fi opusul acestul unghi. Rotirea inamiculor fata
+ de player se face la fel, obiectul curent va fi inamicul, iar cel relativ
+ playerul.
+
+  - Deplasarea obiectelor spre un punct (deplasarea inamicilor spre nava player
+sau deplasarea proiectilelor spre mouse): Vom afla vectorul de viteza al
+obiectului, rezultand deplasarea acestuia cu o anumita viteza (speed) pe dreapta
+asociata celor doua puncte. Pentru a calcula vectorul de viteza, mai
+consideram un punct care trebuie sa apartina dreptei, si sa fie la o distanta,
+speed, fata de obiect. Aceasta distanta poate fi luata pe axa OX sau OY, in
+functie de cadranul din care face parte punctul relativ (mouse-ul). Afland si
+cealalta coordonata, diferenta dintre coordonatele x si y ale obiectului
+curent si ale noului punct este vectorul de viteza. Si semnifica ca obiectul
+curent se va deplasa catre punctul relativ cu o viteza speed.
+   Daca adun la pozitia obiectului(proiectilului) vectorul de viteza, obtinem
+urmatorul punct de pe dreapta la distanta speed fara de pozitia obiectului.
+Astfel, facem o translatie a obiectului pe dreapta cu speed.
+
+  - Coliziunea dintre obiecte se face considerandu-le pe acestea ca niste 
+cercuri. Daca suma razelor celor 2 cercuri este mai mare sau egala cu 
+distanta dintre centrele lor, atunci cele doua cercuri/obiecte s-au intersectat.
+
+  - Animatiile (micsorarea navei inamice sau colorarea ecranului) sunt de
+fapt functii de gradul intai, dependente de timp. Am calculat functia pentru
+acestea facand un grafic. De exemplu pentru colorarea ecranului avem la t = 0
+culoarea rosu = 0, iar la t = 2 secunde culoarea rosu = 255; =>
+=> f(t) = (255 / 2) * t;
+
+  Mai multe detalii se gasesc in cod.
+
+
+    4. Problema aparute:
+
+  - Problema principala a fost cu rularea framework-ului sau a jocului dat ca
+exemplu datorita versiunii neactualizate de OpenGL.
+  - In cod nu pot spune ca am intampinat mari dificultati, a fost o tema de
+dificultate medie.
+
+
+    5. Bonus
+
+  - Pentru bonus am ales ca la fiecare 30 de secunde sa apara un obiect, care
+va ramane pe ecran timp de 10 secunde. Acest obiect poate fi o viata sau un
+scut. Astfel ca nava player poate primi o viata in plus sau sa devina
+invincibila timp de 10 secunde.
+
+  - Daca utilizatorul distruge 50 de nave inamice, atunci va aparea inamicul
+sef. Acesta are mai multe proprietati:
+      - se misca dintr-un capat intr-altul al ecranului cu o viteza stabilita.
+      - poate sa lanseze proiectile catre nava player la un timp stabilit;
+      - la un interval 35 de secunde, el primeste un scut ce tine 10 secunde.
+      Astfel el devine invincibil, iar nava player nu are ce face decat sa se fereasca de proiectilele lui.
+      - Boss-ul are 80 de vieti. El se poate miscora de 2 ori. O data la 40 de
+      vieti si o data la 20. La fiecare micsorare, viteza lui creste cu jumatate
+      iar frecventa de lansare a proiectilelor creste si ea.
+
+  - Am setat si o pauza pentru joc la apasarea tastei P.
